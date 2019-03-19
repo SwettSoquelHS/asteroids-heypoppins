@@ -48,7 +48,7 @@ interface Movable {
   void update(); 
 
   /*
-    Display the isntance
+    Display the instance
    */
   void show();
 
@@ -67,7 +67,7 @@ interface Movable {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
  Abstract base class Mover 
  */
-abstract class Mover {// implements Movable {
+abstract class Mover implements Movable {
 
   protected float x, y;
   protected float speed;
@@ -77,17 +77,21 @@ abstract class Mover {// implements Movable {
 
   /*
     Default Mover, not actually moving and directionless
-  */
+   */
   Mover(float x, float y) {
     //The line below shows how we can 
     //link this constructor to the constructor below through "this"
-    this(x, y, 0, 0);  
+    this(x, y, 0, 0);
+  }
+
+  Mover() {
+    super();
   }
 
   /*
     Mover constructor specifying x, y position along with its speed and
-    direction (in degrees)
-  */
+   direction (in degrees)
+   */
   Mover(float x, float y, float speed, float direction) {
     this.x = x;
     this.y = y;
@@ -112,8 +116,8 @@ abstract class Mover {// implements Movable {
 
   /*
     Save this for your subclasses to override.
-    but notice how it is tagged with abstract, meaning 
-    it is incomplete. (It's like an I.O.U.)
+   but notice how it is tagged with abstract, meaning 
+   it is incomplete. (It's like an I.O.U.)
    */
   abstract void show();
 
@@ -121,9 +125,38 @@ abstract class Mover {// implements Movable {
   /*
     TODO: Part 4: Implement collision detection
    */
-  boolean collidingWith(Movable object){
-     return false; 
+  boolean collidingWith(Movable object) {
+    float distance = dist(x, y, object.getX(), object.getY());
+    boolean touching = distance < (radius + object.getRadius());
+    return touching;
   }
-  
-  //TODO: Part I: implement the methods of Moveable interface - delete this comment
+
+  //TODO: Part I: implement the methods of Moveable interface
+  float getX() {
+    return this.x;
+  }
+
+  float getY() {
+    return this.y;
+  }
+
+  float getDirection() {
+    return this.direction;
+  }
+
+  float getSpeed() {
+    return this.speed;
+  }
+
+  float getRadius() {
+    return this.radius;
+  }
+
+  void setDirection(float newDirection) {
+    this.direction = newDirection;
+  }
+
+  void setSpeed(float newSpeed) {
+    this.speed = newSpeed;
+  }
 }
