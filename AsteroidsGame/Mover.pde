@@ -42,6 +42,10 @@ interface Movable {
    */
   void setSpeed(float newSpeed);
 
+  void setX(float newX);
+
+  void setY(float newY);
+
   /*
    Update the internals of the instance
    */
@@ -81,7 +85,7 @@ abstract class Mover implements Movable {
   Mover(float x, float y) {
     //The line below shows how we can 
     //link this constructor to the constructor below through "this"
-    this(x, y, 0, 0);
+    this(x, y, 0, 0, 0);
   }
 
   Mover() {
@@ -92,13 +96,13 @@ abstract class Mover implements Movable {
     Mover constructor specifying x, y position along with its speed and
    direction (in degrees)
    */
-  Mover(float x, float y, float speed, float direction) {
+  Mover(float x, float y, float speed, float direction, float radius) {
     this.x = x;
     this.y = y;
     this.speed = speed;
     this.direction = direction;
     myColor = 225;
-    radius = 0.0;
+    this.radius = radius;
   }
 
   /*
@@ -125,9 +129,10 @@ abstract class Mover implements Movable {
   /*
     TODO: Part 4: Implement collision detection
    */
-  boolean collidingWith(Movable object) {
-    float distance = dist(x, y, object.getX(), object.getY());
-    boolean touching = distance < (radius + object.getRadius());
+  boolean collidingWith(Movable m) {
+    //Can't collide with yourself
+    float distance = dist(x, y, m.getX(), m.getY());
+    boolean touching = distance < radius + m.getRadius();
     return touching;
   }
 
@@ -158,5 +163,13 @@ abstract class Mover implements Movable {
 
   void setSpeed(float newSpeed) {
     this.speed = newSpeed;
+  }
+
+  void setX(float newX) {
+    this.x = newX;
+  }
+
+  void setY(float newY) {
+    this.y = newY;
   }
 }

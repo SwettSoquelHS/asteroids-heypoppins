@@ -5,9 +5,17 @@
  might be useful.
  */
 class Spaceship extends Mover { 
-
+  int life;
+  int score;
+  Bullet myBullet;
+  ArrayList <Bullet> bullets;
   Spaceship(float x, float y) {
     super(x, y);
+    bullets = new ArrayList<Bullet>();
+    life = 3;
+    radius = 25.0;
+    score = 0;
+    
   }
 
   Spaceship(float x, float y, float speed, float direction) {
@@ -15,7 +23,15 @@ class Spaceship extends Mover {
     this.speed = speed;
     this.direction = direction;
   }
-
+  
+  int getLife(){
+    return life;
+  }
+  
+  void setLives(){
+    life = life - 1;
+  }
+  
   void show() {
     if (x > width+35) {
       x = -35;
@@ -38,7 +54,50 @@ class Spaceship extends Mover {
     drawBack();
     drawProp();
     popMatrix();
+    for (int i=0; i<bullets.size(); i++) {
+      Bullet b = bullets.get(i);
+      if (b != null)
+        b.show();
+    }
   }
+  
+  void fire() {
+    if (bullets.size() < 50 && x != 300 && y != 200) {
+      myBullet = new Bullet(this.x, this.y, this.speed + 5, this.direction, 10);
+      bullets.add(myBullet);
+    }
+  }
+  
+  void update(){
+    super.update();
+    for (int i=0; i<bullets.size(); i++) {
+      Bullet b = bullets.get(i);
+      if (b != null)
+        b.update();
+      if (b.getTimer() < 0) {
+        bullets.remove(b);
+      }
+    }
+  }
+  
+  int getScore(){
+    return score;
+  }
+  
+  void checkOnBullets(Asteroid[] ball){
+    for(Bullet b: bullets){
+      for(int i = 0; i < ball.length; i++){
+        if(b.collidingWith(ball[i])){
+          if(b.getLife() != 0){
+            score++;
+          }
+          ball[i].setLives();
+          b.setLife();
+      } 
+    }
+    }
+  }
+
 
   //green = 33,131,57
   //windshield = 166, 245,245
@@ -110,4 +169,131 @@ class Spaceship extends Mover {
     vertex(16, 16);
     endShape(CLOSE);
   }
+  
+  void drawLives3(){
+    pushMatrix();
+    fill(#FF3131);
+    drawLives3_1();
+    drawLives3_2();
+    drawLives3_3();
+    popMatrix();
+  }
+  
+  void drawLives3_1(){
+    pushMatrix();
+    translate(750, 25);
+    drawHeart();
+    popMatrix();
+  }
+  
+  void drawLives3_2(){
+    pushMatrix();
+    translate(750, 100);
+    drawHeart();
+    popMatrix();
+  }
+  
+  void drawLives3_3(){
+    pushMatrix();
+    translate(750, 175);
+    drawHeart();
+    popMatrix();
+  }
+  
+  
+  
+  
+  void drawLives2(){
+    pushMatrix();
+    fill(#FF3131);
+    drawLives2_1();
+    drawLives2_2();
+    popMatrix();
+  }
+  
+  void drawLives2_1(){
+    pushMatrix();
+    translate(750, 25);
+    drawHeart();
+    popMatrix();
+  }
+  
+  void drawLives2_2(){
+    pushMatrix();
+    translate(750, 100);
+    drawHeart();
+    popMatrix();
+  }
+  
+  void drawLives1(){
+    pushMatrix();
+    fill(#FF3131);
+    translate(750, 25);
+    drawHeart();
+    popMatrix();
+  }
+  
+  void drawDead(){
+    pushMatrix();
+    fill(#D1C8C8);
+    translate(750, 25);
+    beginShape();
+    fill(#D1C8C8);
+    drawHead();
+    
+    fill(0);
+    drawEyeL();
+    drawEyeR();
+    drawNose();
+    endShape();
+    popMatrix();
+  }
+  
+  void drawHead(){
+    beginShape();
+    vertex(15,0);
+    vertex(30, 15);
+    vertex(30, 30);
+    vertex(15, 45);
+    vertex(15, 60);
+    vertex(-15, 60);
+    vertex(-15, 45);
+    vertex(-30, 30);
+    vertex(-30, 15);
+    vertex(-15, 0);
+    vertex(15, 0);
+    endShape();
+  }
+  
+  void drawEyeL(){
+    rect(-15, 15, 8, 15);
+  }
+  
+  void drawEyeR(){
+    rect(7, 15, 8, 15);
+  }
+  
+  void drawNose(){
+    beginShape();
+    vertex(0, 30);
+    vertex(5, 37);
+    vertex(-5, 37);
+    endShape();
+  }
+  
+  
+  void drawHeart(){
+    beginShape();
+    vertex(0, 0);
+    vertex(15, -15);
+    vertex(30, 0);
+    vertex(30, 15);
+    vertex(0, 45);
+    vertex(-30, 15);
+    vertex(-30, 0);
+    vertex(-15, -15);
+    vertex(0, 0);
+    endShape();
+  }
+    
 }

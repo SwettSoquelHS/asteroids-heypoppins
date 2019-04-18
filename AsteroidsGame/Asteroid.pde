@@ -7,17 +7,29 @@
  to render the asteroid.
  */
 class Asteroid extends Mover {
+  
+  int lives;
 
   Asteroid(float x, float y) {
     super(x, y);
+    lives = 2;
   }
 
-  Asteroid(float x, float y, float speed, float direction) {
+  Asteroid(float x, float y, float speed, float direction, float radius) {
     this.x = x;
     this.y = y;
     this.speed = speed;
     this.direction = direction;
-    radius = 0.0;
+    this.radius = radius;
+    lives = 2;
+  }
+  
+  void setLives(){
+    lives = lives - 1;
+  }
+  
+  int getLives(){
+    return lives;
   }
 
   void show() {
@@ -36,7 +48,6 @@ class Asteroid extends Mover {
     fill(33, 131, 57);
     pushMatrix();
     translate(x, y);
-    scale(1.2);
     rotate(radians(direction));
     rect(-16, -13, 16, 26);
     drawBody();

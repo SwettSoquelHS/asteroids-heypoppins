@@ -11,7 +11,7 @@ boolean boolDead = false;
 
 /*
   Track User keyboard input
- */
+*/
 boolean ROTATE_LEFT;  //User is pressing <-
 boolean ROTATE_RIGHT; //User is pressing ->
 boolean MOVE_FORWARD; //User is pressing ^ arrow
@@ -28,13 +28,14 @@ public void setup() {
 
   player1 = new Spaceship(width/2, height/2);
   back = new Star(0, 0);
-  bloons = new Asteroid[8];
+  bloons = new Asteroid[20];
   for (int i = 0; i < bloons.length; i++) {
     float x = (float)(width*Math.random());
     float y = (float)(height*Math.random());
     float speed = (float)(2.5*Math.random());
     float direction = (float)(360*Math.random());
-    bloons[i] = new Asteroid(x, y, speed, direction);
+    float radius = 12;
+    bloons[i] = new Asteroid(x, y, speed, direction, radius);
   }
   //initialize starfield
 }
@@ -80,18 +81,47 @@ public void draw() {
     }
   }
 
-  player1.update();
-  player1.show();
+  if(player1.getX() != width/2 && player1.getY() != height/2){
+    checkOnShip();
+    if(SPACE_BAR){
+      
+      player1.fire();
+    }
+  }
+  
+  if(player1.getLife() > 0){
+    player1.update();
+    player1.show();
+    player1.checkOnBullets(bloons);
+    textSize(32);
+    fill(0);
+    text("Score: ", 10, 42);
+    text(player1.getScore(), 110, 42);
+  } else {
+    System.out.println("GAME OVER!");
+  }
+    
 
 
   for (int i = 0; i < bloons.length; i++) {
-    if (boolDead == false) {
+    if (bloons[i].getLives() == 2) {
       bloons[i].update();
       bloons[i].show();
-    } else {
+      checkOnAsteroids();
+    } else if(bloons[i].getLives() == 1) {
       bloons[i].showPara1();
       bloons[i].showPara2();
-    }
+    } 
+  }
+  
+  if(player1.getLife() == 3){
+    player1.drawLives3();
+  } else if(player1.getLife() == 2){
+    player1.drawLives2();
+  } else if(player1.getLife() == 1){
+    player1.drawLives1();
+  } else {
+    player1.drawDead();
   }
   //Check for ship collision against asteroids
   //TODO: Part II or III
@@ -152,8 +182,24 @@ void checkOnAsteroids() {
     Asteroid a1 = bloons[i];
     for (int j = 0; j < bloons.length; j++) {
       Asteroid a2 = bloons[j];
-      if (a1 != a2 && a1.collidingWith(a2)) {
+      if (a1 != a2 && a1.collidingWith(a2) && a1.getLives() == 2 && a2.getLives() == 2) {
+        for (int z = 0; z < 20; z++) {
+          a1.direction = a1.direction + (float)(-180*Math.random());
+        }
       }
+    }
+  }
+}
+
+void checkOnShip(){
+  for(int i = 0; i < bloons.length; i++){
+    Asteroid a1 = bloons[i];
+    if(a1.collidingWith(player1) && a1.getLives() == 2){
+      player1.setX(width/2);
+      player1.setY(height/2);
+      player1.setLives();
+    } else if(a1.collidingWith(player1) && a1.getLives() == 1){
+      a1.setLives();
     }
   }
 }
